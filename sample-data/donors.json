@@ -1,0 +1,352 @@
+[
+  {
+    "donorId": "D001",
+    "displayName": "Test Donor 01",
+    "bloodGroup": "A+",
+    "location": {
+      "city": "Mangaluru",
+      "latitude": 12.9129,
+      "longitude": 74.85545
+    },
+    "available": true,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D002",
+    "displayName": "Test Donor 02",
+    "bloodGroup": "O+",
+    "location": {
+      "city": "Mangaluru",
+      "latitude": 12.9141,
+      "longitude": 74.85655
+    },
+    "available": true,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D003",
+    "displayName": "Test Donor 03",
+    "bloodGroup": "B+",
+    "location": {
+      "city": "Surathkal",
+      "latitude": 13.008,
+      "longitude": 74.79595
+    },
+    "available": true,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D004",
+    "displayName": "Test Donor 04",
+    "bloodGroup": "O-",
+    "location": {
+      "city": "Mangaluru",
+      "latitude": 12.9165,
+      "longitude": 74.85435
+    },
+    "available": false,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D005",
+    "displayName": "Test Donor 05",
+    "bloodGroup": "AB+",
+    "location": {
+      "city": "Udupi",
+      "latitude": 13.3385,
+      "longitude": 74.74155
+    },
+    "available": true,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D006",
+    "displayName": "Test Donor 06",
+    "bloodGroup": "A-",
+    "location": {
+      "city": "Mangaluru",
+      "latitude": 12.9129,
+      "longitude": 74.85655
+    },
+    "available": true,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D007",
+    "displayName": "Test Donor 07",
+    "bloodGroup": "B-",
+    "location": {
+      "city": "Surathkal",
+      "latitude": 13.0068,
+      "longitude": 74.79595
+    },
+    "available": true,
+    "profileStatus": "pending_verification",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D008",
+    "displayName": "Test Donor 08",
+    "bloodGroup": "O+",
+    "location": {
+      "city": "Ullal",
+      "latitude": 12.807,
+      "longitude": 74.85635
+    },
+    "available": true,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D009",
+    "displayName": "Test Donor 09",
+    "bloodGroup": "AB-",
+    "location": {
+      "city": "Mangaluru",
+      "latitude": 12.9165,
+      "longitude": 74.85545
+    },
+    "available": false,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D010",
+    "displayName": "Test Donor 10",
+    "bloodGroup": "A+",
+    "location": {
+      "city": "Udupi",
+      "latitude": 13.3385,
+      "longitude": 74.74265
+    },
+    "available": true,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D011",
+    "displayName": "Test Donor 11",
+    "bloodGroup": "O-",
+    "location": {
+      "city": "Surathkal",
+      "latitude": 13.0056,
+      "longitude": 74.79595
+    },
+    "available": true,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D012",
+    "displayName": "Test Donor 12",
+    "bloodGroup": "B+",
+    "location": {
+      "city": "Mangaluru",
+      "latitude": 12.9141,
+      "longitude": 74.85435
+    },
+    "available": false,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D013",
+    "displayName": "Test Donor 13",
+    "bloodGroup": "A-",
+    "location": {
+      "city": "Ullal",
+      "latitude": 12.807,
+      "longitude": 74.85745
+    },
+    "available": true,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D014",
+    "displayName": "Test Donor 14",
+    "bloodGroup": "O+",
+    "location": {
+      "city": "Mangaluru",
+      "latitude": 12.9165,
+      "longitude": 74.85655
+    },
+    "available": true,
+    "profileStatus": "pending_verification",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D015",
+    "displayName": "Test Donor 15",
+    "bloodGroup": "AB+",
+    "location": {
+      "city": "Surathkal",
+      "latitude": 13.0044,
+      "longitude": 74.79595
+    },
+    "available": true,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D016",
+    "displayName": "Test Donor 16",
+    "bloodGroup": "B-",
+    "location": {
+      "city": "Udupi",
+      "latitude": 13.3397,
+      "longitude": 74.74045
+    },
+    "available": true,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D017",
+    "displayName": "Test Donor 17",
+    "bloodGroup": "A+",
+    "location": {
+      "city": "Mangaluru",
+      "latitude": 12.9141,
+      "longitude": 74.85545
+    },
+    "available": false,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D018",
+    "displayName": "Test Donor 18",
+    "bloodGroup": "O-",
+    "location": {
+      "city": "Ullal",
+      "latitude": 12.807,
+      "longitude": 74.85855
+    },
+    "available": true,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D019",
+    "displayName": "Test Donor 19",
+    "bloodGroup": "B+",
+    "location": {
+      "city": "Surathkal",
+      "latitude": 13.0092,
+      "longitude": 74.79595
+    },
+    "available": true,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D020",
+    "displayName": "Test Donor 20",
+    "bloodGroup": "AB-",
+    "location": {
+      "city": "Udupi",
+      "latitude": 13.3385,
+      "longitude": 74.74045
+    },
+    "available": true,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D021",
+    "displayName": "Test Donor 21",
+    "bloodGroup": "A-",
+    "location": {
+      "city": "Mangaluru",
+      "latitude": 12.9129,
+      "longitude": 74.85545
+    },
+    "available": false,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D022",
+    "displayName": "Test Donor 22",
+    "bloodGroup": "O+",
+    "location": {
+      "city": "Udupi",
+      "latitude": 13.3409,
+      "longitude": 74.74265
+    },
+    "available": true,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D023",
+    "displayName": "Test Donor 23",
+    "bloodGroup": "B-",
+    "location": {
+      "city": "Mangaluru",
+      "latitude": 12.9153,
+      "longitude": 74.85765
+    },
+    "available": true,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D024",
+    "displayName": "Test Donor 24",
+    "bloodGroup": "AB+",
+    "location": {
+      "city": "Ullal",
+      "latitude": 12.8082,
+      "longitude": 74.85635
+    },
+    "available": false,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "donorId": "D025",
+    "displayName": "Test Donor 25",
+    "bloodGroup": "O-",
+    "location": {
+      "city": "Surathkal",
+      "latitude": 13.0044,
+      "longitude": 74.79375
+    },
+    "available": true,
+    "profileStatus": "verified",
+    "lastUpdated": "2026-11-01T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  }
+]

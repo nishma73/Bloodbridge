@@ -1,0 +1,23 @@
+[
+  {
+    "hospitalId": "H001",
+    "name": "Sample City Hospital",
+    "city": "Mangaluru",
+    "profileStatus": "verified",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "hospitalId": "H002",
+    "name": "Sample Coastal Medical Centre",
+    "city": "Surathkal",
+    "profileStatus": "verified",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "hospitalId": "H003",
+    "name": "Sample Udupi Hospital",
+    "city": "Udupi",
+    "profileStatus": "pending_verification",
+    "dataType": "synthetic_test_record"
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "requestId": "R001",
+    "hospitalId": "H001",
+    "bloodGroupRequired": "O+",
+    "unitsRequired": 2,
+    "city": "Mangaluru",
+    "searchRadiusKm": 15,
+    "urgency": "high",
+    "status": "open",
+    "createdAt": "2026-11-04T09:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "requestId": "R002",
+    "hospitalId": "H002",
+    "bloodGroupRequired": "A+",
+    "unitsRequired": 1,
+    "city": "Surathkal",
+    "searchRadiusKm": 20,
+    "urgency": "medium",
+    "status": "open",
+    "createdAt": "2026-11-04T09:15:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "requestId": "R003",
+    "hospitalId": "H001",
+    "bloodGroupRequired": "B-",
+    "unitsRequired": 1,
+    "city": "Mangaluru",
+    "searchRadiusKm": 25,
+    "urgency": "high",
+    "status": "open",
+    "createdAt": "2026-11-04T09:30:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "requestId": "R004",
+    "hospitalId": "H003",
+    "bloodGroupRequired": "AB+",
+    "unitsRequired": 2,
+    "city": "Udupi",
+    "searchRadiusKm": 15,
+    "urgency": "low",
+    "status": "open",
+    "createdAt": "2026-11-04T10:00:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "requestId": "R005",
+    "hospitalId": "H002",
+    "bloodGroupRequired": "O-",
+    "unitsRequired": 1,
+    "city": "Surathkal",
+    "searchRadiusKm": 30,
+    "urgency": "high",
+    "status": "open",
+    "createdAt": "2026-11-04T10:20:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "requestId": "R006",
+    "hospitalId": "H001",
+    "bloodGroupRequired": "A-",
+    "unitsRequired": 1,
+    "city": "Mangaluru",
+    "searchRadiusKm": 10,
+    "urgency": "medium",
+    "status": "cancelled",
+    "createdAt": "2026-11-04T10:40:00+05:30",
+    "dataType": "synthetic_test_record"
+  }
+]

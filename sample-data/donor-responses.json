@@ -1,0 +1,18 @@
+[
+  {
+    "responseId": "RESP001",
+    "requestId": "R001",
+    "donorId": "D002",
+    "response": "accepted",
+    "respondedAt": "2026-11-04T09:10:00+05:30",
+    "dataType": "synthetic_test_record"
+  },
+  {
+    "responseId": "RESP002",
+    "requestId": "R001",
+    "donorId": "D008",
+    "response": "declined",
+    "respondedAt": "2026-11-04T09:12:00+05:30",
+    "dataType": "synthetic_test_record"
+  }
+]
