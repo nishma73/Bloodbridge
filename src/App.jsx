@@ -1,0 +1,105 @@
+import { useEffect } from 'react'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import Navbar from './components/Navbar'
+import Footer from './components/Footer'
+import ProtectedRoute from './components/ProtectedRoute'
+import { PageLoader } from './components/ui'
+import { useAuth } from './context/AuthContext'
+
+import Home from './pages/Home'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import DonorDashboard from './pages/DonorDashboard'
+import HospitalDashboard from './pages/HospitalDashboard'
+import CreateRequest from './pages/CreateRequest'
+import MatchingDonors from './pages/MatchingDonors'
+import RequestStatus from './pages/RequestStatus'
+import Profile from './pages/Profile'
+import NotFound from './pages/NotFound'
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [pathname])
+  return null
+}
+
+/** Sends an authenticated user to the dashboard that matches their role. */
+function DashboardRedirect() {
+  const { user, loading } = useAuth()
+  if (loading) return <PageLoader label="Loading…" />
+  if (!user) return <Navigate to="/login" replace />
+  return <Navigate to={user.role === 'donor' ? '/donor' : '/hospital'} replace />
+}
+
+export default function App() {
+  return (
+    <div className="flex min-h-screen flex-col">
+      <ScrollToTop />
+      <Navbar />
+      <main className="flex-1">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={<DashboardRedirect />} />
+
+          <Route
+            path="/donor"
+            element={
+              <ProtectedRoute role="donor">
+                <DonorDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/hospital"
+            element={
+              <ProtectedRoute role="hospital">
+                <HospitalDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/hospital/requests/new"
+            element={
+              <ProtectedRoute role="hospital">
+                <CreateRequest />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/hospital/requests/:id"
+            element={
+              <ProtectedRoute role="hospital">
+                <RequestStatus />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/hospital/requests/:id/donors"
+            element={
+              <ProtectedRoute role="hospital">
+                <MatchingDonors />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
+      <Footer />
+    </div>
+  )
+}
