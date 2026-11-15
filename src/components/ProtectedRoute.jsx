@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import { PageLoader } from './ui'
 
 /**
- * Guards a route. `role` optionally restricts access to 'donor' or 'hospital'.
+ * Guards a route. `role` optionally restricts access to 'donor', 'hospital', or 'admin'.
  */
 export default function ProtectedRoute({ role, children }) {
   const { user, loading } = useAuth()
@@ -16,7 +16,8 @@ export default function ProtectedRoute({ role, children }) {
   }
 
   if (role && user.role !== role) {
-    const fallback = user.role === 'donor' ? '/donor' : '/hospital'
+    const fallback =
+      user.role === 'donor' ? '/donor' : user.role === 'admin' ? '/admin' : '/hospital'
     return <Navigate to={fallback} replace />
   }
 

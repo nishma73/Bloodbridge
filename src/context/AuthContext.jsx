@@ -61,6 +61,7 @@ export function AuthProvider({ children }) {
       updateProfile,
       isDonor: user?.role === 'donor',
       isHospital: user?.role === 'hospital',
+      isAdmin: user?.role === 'admin',
     }),
     [user, loading, register, login, logout, refresh, updateProfile],
   )

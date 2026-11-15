@@ -5,11 +5,11 @@ import Logo from './Logo'
 import NotificationBell from './NotificationBell'
 
 export default function Navbar() {
-  const { user, logout, isDonor, isHospital } = useAuth()
+  const { user, logout, isDonor, isHospital, isAdmin } = useAuth()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
 
-  const dashboardPath = isDonor ? '/donor' : isHospital ? '/hospital' : '/'
+  const dashboardPath = isDonor ? '/donor' : isHospital ? '/hospital' : isAdmin ? '/admin' : '/'
 
   const navLinkClass = ({ isActive }) =>
     `rounded-lg px-3 py-2 text-sm font-medium transition ${
@@ -41,7 +41,7 @@ export default function Navbar() {
           </a>
           {user && (
             <NavLink to={dashboardPath} className={navLinkClass}>
-              Dashboard
+              {isAdmin ? 'Admin Console' : 'Dashboard'}
             </NavLink>
           )}
         </div>
@@ -52,11 +52,13 @@ export default function Navbar() {
             <>
               <NotificationBell />
               <span className="hidden max-w-[10rem] truncate text-sm text-white/80 lg:inline">
-                {user.name || user.hospitalName}
+                {user.name || user.hospitalName || (isAdmin ? 'Admin' : 'User')}
               </span>
-              <Link to="/profile" className="btn-outline bg-white/10 text-white hover:bg-white/20">
-                Profile
-              </Link>
+              {!isAdmin && (
+                <Link to="/profile" className="btn-outline bg-white/10 text-white hover:bg-white/20">
+                  Profile
+                </Link>
+              )}
               <button type="button" onClick={handleLogout} className="btn-ghost text-white hover:bg-white/10">
                 Log out
               </button>
@@ -103,14 +105,16 @@ export default function Navbar() {
             </NavLink>
             {user && (
               <NavLink to={dashboardPath} className={navLinkClass} onClick={close}>
-                Dashboard
+                {isAdmin ? 'Admin Console' : 'Dashboard'}
               </NavLink>
             )}
             {user ? (
               <>
-                <NavLink to="/profile" className={navLinkClass} onClick={close}>
-                  Profile
-                </NavLink>
+                {!isAdmin && (
+                  <NavLink to="/profile" className={navLinkClass} onClick={close}>
+                    Profile
+                  </NavLink>
+                )}
                 <button
                   type="button"
                   onClick={handleLogout}

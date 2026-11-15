@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
-import { usingFirebase } from '../services'
 import { Alert, TextField } from '../components/ui'
 import Logo from '../components/Logo'
 
@@ -25,8 +24,9 @@ export default function Login() {
     setBusy(true)
     try {
       const user = await login(form.email.trim(), form.password)
-      toast.success(`Welcome back, ${user.name || user.hospitalName}!`)
-      const fallback = user.role === 'donor' ? '/donor' : '/hospital'
+      toast.success(`Welcome back, ${user.name || user.hospitalName || 'User'}!`)
+      const fallback =
+        user.role === 'donor' ? '/donor' : user.role === 'admin' ? '/admin' : '/hospital'
       navigate(redirectTo || fallback, { replace: true })
     } catch (err) {
       setError(err.message || 'Unable to log in.')
@@ -36,11 +36,13 @@ export default function Login() {
   }
 
   const fillDemo = (role) => {
-    setForm(
-      role === 'hospital'
-        ? { email: 'hospital@example.com', password: 'password123' }
-        : { email: 'aarav@example.com', password: 'password123' },
-    )
+    if (role === 'hospital') {
+      setForm({ email: 'hospital@example.com', password: 'password123' })
+    } else if (role === 'admin') {
+      setForm({ email: 'admin@bloodbridge.org', password: 'password123' })
+    } else {
+      setForm({ email: 'aarav@example.com', password: 'password123' })
+    }
   }
 
   return (
@@ -83,19 +85,20 @@ export default function Login() {
           </button>
         </form>
 
-        {!usingFirebase && (
-          <div className="mt-5 rounded-xl border border-primary/20 bg-alert p-4 text-sm">
-            <p className="font-semibold text-heading">Quick demo logins</p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              <button type="button" onClick={() => fillDemo('donor')} className="btn-outline">
-                Use donor demo
-              </button>
-              <button type="button" onClick={() => fillDemo('hospital')} className="btn-outline">
-                Use hospital demo
-              </button>
-            </div>
+        <div className="mt-5 rounded-xl border border-primary/20 bg-alert p-4 text-sm">
+          <p className="font-semibold text-heading">Quick demo logins</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <button type="button" onClick={() => fillDemo('donor')} className="btn-outline text-xs">
+              Donor demo
+            </button>
+            <button type="button" onClick={() => fillDemo('hospital')} className="btn-outline text-xs">
+              Hospital demo
+            </button>
+            <button type="button" onClick={() => fillDemo('admin')} className="btn-outline text-xs">
+              Admin demo
+            </button>
           </div>
-        )}
+        </div>
 
         <p className="mt-5 text-center text-sm text-gray-500">
           New to Blood Bridge?{' '}

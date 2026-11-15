@@ -14,6 +14,7 @@ import HospitalDashboard from './pages/HospitalDashboard'
 import CreateRequest from './pages/CreateRequest'
 import MatchingDonors from './pages/MatchingDonors'
 import RequestStatus from './pages/RequestStatus'
+import AdminDashboard from './pages/AdminDashboard'
 import Profile from './pages/Profile'
 import NotFound from './pages/NotFound'
 
@@ -30,6 +31,7 @@ function DashboardRedirect() {
   const { user, loading } = useAuth()
   if (loading) return <PageLoader label="Loading…" />
   if (!user) return <Navigate to="/login" replace />
+  if (user.role === 'admin') return <Navigate to="/admin" replace />
   return <Navigate to={user.role === 'donor' ? '/donor' : '/hospital'} replace />
 }
 
@@ -83,6 +85,15 @@ export default function App() {
             element={
               <ProtectedRoute role="hospital">
                 <MatchingDonors />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminDashboard />
               </ProtectedRoute>
             }
           />

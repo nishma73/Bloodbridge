@@ -1,42 +1,50 @@
 // ---------------------------------------------------------------------------
 // Service layer entry point.
 //
-// Chooses the Firebase adapter when credentials are present, otherwise the
-// localStorage mock adapter. The Firebase adapter (and the firebase SDK) is
-// loaded lazily so demo mode never downloads it.
-//
-// Every screen imports `service` from here and calls it as if it were a plain
-// object; each call resolves the correct adapter on first use.
+// Defaults to the functional Node.js / Express / MongoDB REST API adapter.
+// Gracefully preserves Firebase or Mock fallback if explicitly configured.
 // ---------------------------------------------------------------------------
 import { isFirebaseConfigured } from '../config/firebase'
 import { mockAdapter } from './mockAdapter'
+import { apiAdapter } from './apiAdapter'
+
+// By default, connect to our live Express/MongoDB backend
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
 
 let adapterPromise
 function resolveAdapter() {
   if (!adapterPromise) {
-    adapterPromise = isFirebaseConfigured
-      ? import('./firebaseAdapter').then((mod) => mod.firebaseAdapter)
-      : Promise.resolve(mockAdapter)
+    if (USE_MOCK) {
+      adapterPromise = Promise.resolve(mockAdapter)
+    } else if (isFirebaseConfigured) {
+      adapterPromise = import('./firebaseAdapter').then((mod) => mod.firebaseAdapter)
+    } else {
+      adapterPromise = Promise.resolve(apiAdapter)
+    }
   }
   return adapterPromise
 }
 
 /** Build a lazy, adapter-agnostic method. */
 const call = (namespace, method) => (...args) =>
-  resolveAdapter().then((adapter) => adapter[namespace][method](...args))
+  resolveAdapter().then((adapter) => {
+    if (!adapter[namespace] || typeof adapter[namespace][method] !== 'function') {
+      throw new Error(`Method ${namespace}.${method} is not implemented on the active adapter.`);
+    }
+    return adapter[namespace][method](...args);
+  })
 
 export const usingFirebase = isFirebaseConfigured
+export const usingMock = USE_MOCK
 
 export const service = {
-  kind: isFirebaseConfigured ? 'firebase' : 'mock',
+  kind: USE_MOCK ? 'mock' : isFirebaseConfigured ? 'firebase' : 'api',
 
   auth: {
     register: call('auth', 'register'),
     login: call('auth', 'login'),
     logout: call('auth', 'logout'),
     getCurrentUser: call('auth', 'getCurrentUser'),
-    // Returns an unsubscribe function synchronously, even though the adapter
-    // resolves asynchronously.
     onAuthChange(callback) {
       let cancelled = false
       let unsubscribe = () => {}
@@ -80,6 +88,15 @@ export const service = {
     listForUser: call('notifications', 'listForUser'),
     markRead: call('notifications', 'markRead'),
     markAllRead: call('notifications', 'markAllRead'),
+  },
+
+  admin: {
+    getStats: call('admin', 'getStats'),
+    listDonors: call('admin', 'listDonors'),
+    listHospitals: call('admin', 'listHospitals'),
+    verifyHospital: call('admin', 'verifyHospital'),
+    listRequests: call('admin', 'listRequests'),
+    updateUserStatus: call('admin', 'updateUserStatus'),
   },
 
   reset: () => resolveAdapter().then((adapter) => adapter.reset()),
