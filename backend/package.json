@@ -1,0 +1,38 @@
+{
+  "name": "bloodbridge-backend",
+  "version": "1.0.0",
+  "description": "BloodBridge REST API - Blood donor connection platform backend",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "seed": "node utils/seed.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "keywords": [
+    "blood-donation",
+    "express",
+    "mongoose",
+    "mongodb",
+    "jwt",
+    "bloodbridge"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb-memory-server": "^10.1.4",
+    "mongoose": "^8.12.1",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "supertest": "^7.0.0"
+  }
+}

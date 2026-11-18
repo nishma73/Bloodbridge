@@ -5,13 +5,15 @@ import { useToast } from '../context/ToastContext'
 import { service, usingFirebase } from '../services'
 import { BLOOD_GROUPS } from '../lib/blood'
 import { AvailabilityBadge, VerifiedBadge } from '../components/Badges'
-import { Alert, PageHeader, SelectField, TextField } from '../components/ui'
+import { Alert, PageHeader, PhoneField, SelectField, TextField } from '../components/ui'
+import { validateIndianPhoneNumber } from '../lib/validation'
 
 export default function Profile() {
   const { user, updateProfile } = useAuth()
   const toast = useToast()
 
   const [form, setForm] = useState(user)
+  const [phoneError, setPhoneError] = useState('')
   const [busy, setBusy] = useState(false)
 
   useEffect(() => {
@@ -23,8 +25,47 @@ export default function Profile() {
     setForm((f) => ({ ...f, [key]: value }))
   }
 
+  const handlePhoneChange = (event, digits) => {
+    const formattedVal = event.target.value
+    setForm((f) => ({ ...f, phone: formattedVal }))
+
+    if (phoneError) {
+      if (digits.length === 10) {
+        const check = validateIndianPhoneNumber(formattedVal)
+        if (check.isValid) setPhoneError('')
+      } else if (digits.length === 0) {
+        setPhoneError('')
+      }
+    }
+  }
+
+  const handlePhoneBlur = () => {
+    if (!form.phone || form.phone.trim() === '') {
+      setPhoneError('Phone number is required.')
+      return
+    }
+    const check = validateIndianPhoneNumber(form.phone)
+    if (!check.isValid) {
+      setPhoneError(check.error)
+    } else {
+      setPhoneError('')
+    }
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault()
+
+    // Validate phone number
+    const phoneCheck = validateIndianPhoneNumber(form.phone)
+    if (!phoneCheck.isValid) {
+      setPhoneError(phoneCheck.error)
+      toast.error(phoneCheck.error)
+      const phoneInput = document.getElementById('phone')
+      if (phoneInput) phoneInput.focus()
+      return
+    }
+    setPhoneError('')
+
     setBusy(true)
     try {
       const patch =
@@ -32,7 +73,7 @@ export default function Profile() {
           ? {
               name: form.name,
               bloodGroup: form.bloodGroup,
-              phone: form.phone,
+              phone: phoneCheck.formatted,
               city: form.city,
               latitude: Number(form.latitude),
               longitude: Number(form.longitude),
@@ -42,7 +83,7 @@ export default function Profile() {
               hospitalName: form.hospitalName,
               registrationNumber: form.registrationNumber,
               contactPerson: form.contactPerson,
-              phone: form.phone,
+              phone: phoneCheck.formatted,
               city: form.city,
               address: form.address,
               latitude: Number(form.latitude),
@@ -87,7 +128,7 @@ export default function Profile() {
       </div>
 
       <div className="card p-6">
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5" noValidate>
           {user.role === 'donor' ? (
             <div className="grid gap-4 sm:grid-cols-2">
               <TextField id="name" label="Full name" required value={form.name || ''} onChange={update('name')} />
@@ -127,7 +168,17 @@ export default function Profile() {
           )}
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <TextField id="phone" label="Phone number" value={form.phone || ''} onChange={update('phone')} />
+            <PhoneField
+              id="phone"
+              label="Phone number"
+              required
+              value={form.phone || ''}
+              onChange={handlePhoneChange}
+              onBlur={handlePhoneBlur}
+              error={phoneError}
+              hint="10-digit mobile number"
+              placeholder="98765 43210"
+            />
             <TextField id="city" label="City / area" value={form.city || ''} onChange={update('city')} />
           </div>
 
@@ -158,33 +209,29 @@ export default function Profile() {
                 onChange={update('available')}
                 className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
               />
-              <span className="text-sm">I am currently available to donate blood.</span>
+              <span className="text-sm">I am available to donate blood immediately.</span>
             </label>
           )}
 
-          <div className="flex justify-end">
-            <button type="submit" className="btn-primary" disabled={busy}>
-              {busy ? 'Saving…' : 'Save changes'}
-            </button>
-          </div>
+          <button type="submit" className="btn-primary" disabled={busy}>
+            {busy ? 'Saving…' : 'Save changes'}
+          </button>
         </form>
       </div>
 
-      <Alert tone="info" className="mt-5">
-        Profile verification is handled by Blood Bridge administrators. Only verified profiles are
-        eligible for full matching.
-      </Alert>
-
       {!usingFirebase && (
-        <div className="card mt-5 p-5">
-          <h3 className="text-base font-semibold">Demo controls</h3>
-          <p className="mt-1 text-sm text-gray-500">
-            You are running on the in-browser demo database. Reset it to restore the seeded donors,
-            hospitals and requests.
-          </p>
-          <button type="button" className="btn-danger mt-3" onClick={resetDemo}>
-            Reset demo data
-          </button>
+        <div className="card mt-6 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold text-heading">Reset demo data</p>
+              <p className="text-xs text-gray-500">
+                Restore the sample database to its initial state.
+              </p>
+            </div>
+            <button type="button" onClick={resetDemo} className="btn-outline text-xs">
+              Reset now
+            </button>
+          </div>
         </div>
       )}
     </div>

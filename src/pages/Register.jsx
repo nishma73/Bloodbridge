@@ -3,7 +3,8 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { BLOOD_GROUPS } from '../lib/blood'
-import { Alert, SelectField, TextField } from '../components/ui'
+import { Alert, PhoneField, SelectField, TextField } from '../components/ui'
+import { validateIndianPhoneNumber } from '../lib/validation'
 import Logo from '../components/Logo'
 
 const DEFAULT_COORDS = { latitude: 12.9716, longitude: 77.5946 } // Bengaluru centre
@@ -36,11 +37,43 @@ export default function Register() {
   const [role, setRole] = useState(params.get('role') === 'hospital' ? 'hospital' : 'donor')
   const [form, setForm] = useState(emptyForm)
   const [error, setError] = useState('')
+  const [phoneError, setPhoneError] = useState('')
   const [busy, setBusy] = useState(false)
 
   const update = (key) => (event) => {
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value
     setForm((f) => ({ ...f, [key]: value }))
+  }
+
+  const handlePhoneChange = (event, digits) => {
+    const formattedVal = event.target.value
+    setForm((f) => ({ ...f, phone: formattedVal }))
+
+    // Real-time validation feedback:
+    // If field previously showed an error and user has now typed 10 valid digits, clear error immediately
+    if (phoneError) {
+      if (digits.length === 10) {
+        const check = validateIndianPhoneNumber(formattedVal)
+        if (check.isValid) {
+          setPhoneError('')
+        }
+      } else if (digits.length === 0) {
+        setPhoneError('')
+      }
+    }
+  }
+
+  const handlePhoneBlur = () => {
+    if (!form.phone || form.phone.trim() === '') {
+      setPhoneError('Phone number is required.')
+      return
+    }
+    const check = validateIndianPhoneNumber(form.phone)
+    if (!check.isValid) {
+      setPhoneError(check.error)
+    } else {
+      setPhoneError('')
+    }
   }
 
   const useMyLocation = () => {
@@ -65,6 +98,19 @@ export default function Register() {
     event.preventDefault()
     setError('')
 
+    // 1. Validate Phone Number
+    const phoneCheck = validateIndianPhoneNumber(form.phone)
+    if (!phoneCheck.isValid) {
+      setPhoneError(phoneCheck.error)
+      setError(phoneCheck.error)
+      // Focus phone input element
+      const phoneInput = document.getElementById('phone')
+      if (phoneInput) phoneInput.focus()
+      return
+    }
+    setPhoneError('')
+
+    // 2. Validate Password
     if (form.password.length < 6) {
       setError('Password must be at least 6 characters long.')
       return
@@ -77,7 +123,7 @@ export default function Register() {
     const base = {
       email: form.email.trim(),
       password: form.password,
-      phone: form.phone.trim(),
+      phone: phoneCheck.formatted, // Stored as "+91 <10 digits>"
       city: form.city.trim(),
       latitude: Number(form.latitude),
       longitude: Number(form.longitude),
@@ -150,7 +196,7 @@ export default function Register() {
           </Alert>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5" noValidate>
           {role === 'donor' ? (
             <div className="grid gap-4 sm:grid-cols-2">
               <TextField
@@ -222,12 +268,16 @@ export default function Register() {
               onChange={update('email')}
               placeholder="you@example.com"
             />
-            <TextField
+            <PhoneField
               id="phone"
               label="Phone number"
+              required
               value={form.phone}
-              onChange={update('phone')}
-              placeholder="+91 90000 00000"
+              onChange={handlePhoneChange}
+              onBlur={handlePhoneBlur}
+              error={phoneError}
+              hint="Enter 10-digit mobile number"
+              placeholder="98765 43210"
             />
           </div>
 
