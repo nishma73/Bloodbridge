@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import BloodFlow from './components/BloodFlow'
 import ProtectedRoute from './components/ProtectedRoute'
 import { PageLoader } from './components/ui'
 import { useAuth } from './context/AuthContext'
@@ -26,6 +27,23 @@ function ScrollToTop() {
   return null
 }
 
+/** Smoothly honours in-page anchors such as /#how-it-works. */
+function ScrollToHash() {
+  const { pathname, hash } = useLocation()
+  useEffect(() => {
+    if (!hash) return undefined
+    const frame = window.requestAnimationFrame(() => {
+      try {
+        document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      } catch {
+        // Ignore invalid selectors supplied in the URL.
+      }
+    })
+    return () => window.cancelAnimationFrame(frame)
+  }, [pathname, hash])
+  return null
+}
+
 /** Sends an authenticated user to the dashboard that matches their role. */
 function DashboardRedirect() {
   const { user, loading } = useAuth()
@@ -37,8 +55,10 @@ function DashboardRedirect() {
 
 export default function App() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="relative flex min-h-screen flex-col">
       <ScrollToTop />
+      <ScrollToHash />
+      <BloodFlow />
       <Navbar />
       <main className="flex-1">
         <Routes>

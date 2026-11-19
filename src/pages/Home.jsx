@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { usingFirebase } from '../services'
 import { BLOOD_GROUPS } from '../lib/blood'
+import Reveal from '../components/Reveal'
 
 const FEATURES = [
   {
@@ -53,7 +53,7 @@ export default function Home() {
       <section className="relative overflow-hidden bg-navbar text-white">
         <div className="absolute inset-0 opacity-20 [background:radial-gradient(circle_at_20%_20%,#DC2626,transparent_45%),radial-gradient(circle_at_80%_0%,#EF4444,transparent_40%)]" />
         <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:py-20 lg:grid-cols-2 lg:items-center">
-          <div>
+          <Reveal>
             <span className="badge border-white/20 bg-white/10 text-white">Blood donation coordination</span>
             <h1 className="mt-4 text-4xl font-extrabold leading-tight text-white sm:text-5xl">
               Every drop connects a hospital to a life-saver.
@@ -70,20 +70,9 @@ export default function Home() {
                 How it works
               </a>
             </div>
-            {!usingFirebase && (
-              <div className="mt-6 rounded-xl border border-white/20 bg-white/10 p-4 text-sm">
-                <p className="font-semibold text-white">Demo mode is active</p>
-                <p className="mt-1 text-white/80">
-                  Try it instantly with{' '}
-                  <code className="rounded bg-black/20 px-1.5 py-0.5">hospital@example.com</code> or{' '}
-                  <code className="rounded bg-black/20 px-1.5 py-0.5">aarav@example.com</code> — password{' '}
-                  <code className="rounded bg-black/20 px-1.5 py-0.5">password123</code>.
-                </p>
-              </div>
-            )}
-          </div>
+          </Reveal>
 
-          <div className="relative">
+          <Reveal className="relative" delay={120}>
             <div className="rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur">
               <p className="text-sm font-semibold text-white/80">Supported blood groups</p>
               <div className="mt-3 grid grid-cols-4 gap-2">
@@ -100,27 +89,27 @@ export default function Home() {
                 ))}
               </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Features */}
       <section className="mx-auto max-w-6xl px-4 py-14">
-        <div className="text-center">
+        <Reveal className="text-center">
           <h2 className="text-2xl font-bold sm:text-3xl">Built for speed and clarity</h2>
           <p className="mx-auto mt-2 max-w-2xl text-gray-500">
             A single, accessible platform where hospitals and donors coordinate without friction.
           </p>
-        </div>
+        </Reveal>
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((f) => (
-            <div key={f.title} className="card p-5">
+          {FEATURES.map((f, i) => (
+            <Reveal key={f.title} className="card card-hover p-5" delay={(i % 3) * 80}>
               <span className="text-2xl" aria-hidden="true">
                 {f.icon}
               </span>
               <h3 className="mt-3 text-base font-semibold">{f.title}</h3>
               <p className="mt-1 text-sm text-gray-500">{f.text}</p>
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -128,21 +117,21 @@ export default function Home() {
       {/* How it works */}
       <section id="how-it-works" className="bg-white py-14">
         <div className="mx-auto max-w-6xl px-4">
-          <div className="text-center">
+          <Reveal className="text-center">
             <h2 className="text-2xl font-bold sm:text-3xl">How Blood Bridge works</h2>
             <p className="mx-auto mt-2 max-w-2xl text-gray-500">
               Four steps from registration to a confirmed donation.
             </p>
-          </div>
+          </Reveal>
           <ol className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map((s) => (
-              <li key={s.n} className="card p-5">
+            {STEPS.map((s, i) => (
+              <Reveal as="li" key={s.n} className="card card-hover p-5" delay={i * 70}>
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
                   {s.n}
                 </span>
                 <h3 className="mt-3 text-base font-semibold">{s.title}</h3>
                 <p className="mt-1 text-sm text-gray-500">{s.text}</p>
-              </li>
+              </Reveal>
             ))}
           </ol>
         </div>
@@ -151,7 +140,7 @@ export default function Home() {
       {/* Roles */}
       <section className="mx-auto max-w-6xl px-4 py-14">
         <div className="grid gap-6 lg:grid-cols-2">
-          <div className="card p-6">
+          <Reveal className="card card-hover p-6">
             <h3 className="text-xl font-bold">For donors</h3>
             <ul className="mt-4 space-y-2 text-sm text-gray-600">
               {[
@@ -169,8 +158,8 @@ export default function Home() {
             <Link to="/register?role=donor" className="btn-primary mt-6">
               Register as a donor
             </Link>
-          </div>
-          <div className="card p-6">
+          </Reveal>
+          <Reveal className="card card-hover p-6" delay={100}>
             <h3 className="text-xl font-bold">For hospitals</h3>
             <ul className="mt-4 space-y-2 text-sm text-gray-600">
               {[
@@ -188,17 +177,17 @@ export default function Home() {
             <Link to="/register?role=hospital" className="btn-primary mt-6">
               Register as a hospital
             </Link>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Disclaimer */}
       <section className="mx-auto max-w-6xl px-4 pb-4">
-        <div className="rounded-xl border border-primary/20 bg-alert px-5 py-4 text-sm text-heading">
+        <Reveal className="rounded-xl border border-primary/20 bg-alert px-5 py-4 text-sm text-heading">
           <strong>Important:</strong> Blood Bridge's compatibility matching is preliminary. Actual
           transfusion decisions must always be confirmed by qualified hospital professionals through
           proper blood grouping, antibody screening and crossmatching.
-        </div>
+        </Reveal>
       </section>
     </div>
   )

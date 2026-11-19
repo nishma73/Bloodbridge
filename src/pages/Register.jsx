@@ -45,22 +45,10 @@ export default function Register() {
     setForm((f) => ({ ...f, [key]: value }))
   }
 
-  const handlePhoneChange = (event, digits) => {
-    const formattedVal = event.target.value
-    setForm((f) => ({ ...f, phone: formattedVal }))
-
-    // Real-time validation feedback:
-    // If field previously showed an error and user has now typed 10 valid digits, clear error immediately
-    if (phoneError) {
-      if (digits.length === 10) {
-        const check = validateIndianPhoneNumber(formattedVal)
-        if (check.isValid) {
-          setPhoneError('')
-        }
-      } else if (digits.length === 0) {
-        setPhoneError('')
-      }
-    }
+  const handlePhoneChange = (event) => {
+    setForm((f) => ({ ...f, phone: event.target.value }))
+    // Never validate mid-entry: clear any stale message and wait for blur/submit.
+    if (phoneError) setPhoneError('')
   }
 
   const handlePhoneBlur = () => {
@@ -69,11 +57,7 @@ export default function Register() {
       return
     }
     const check = validateIndianPhoneNumber(form.phone)
-    if (!check.isValid) {
-      setPhoneError(check.error)
-    } else {
-      setPhoneError('')
-    }
+    setPhoneError(check.isValid ? '' : check.error)
   }
 
   const useMyLocation = () => {
@@ -102,7 +86,6 @@ export default function Register() {
     const phoneCheck = validateIndianPhoneNumber(form.phone)
     if (!phoneCheck.isValid) {
       setPhoneError(phoneCheck.error)
-      setError(phoneCheck.error)
       // Focus phone input element
       const phoneInput = document.getElementById('phone')
       if (phoneInput) phoneInput.focus()
@@ -167,149 +150,167 @@ export default function Register() {
         </p>
       </div>
 
-      {/* Role toggle */}
-      <div className="mb-5 grid grid-cols-2 gap-2 rounded-xl bg-white p-1 shadow-card">
-        {[
-          { key: 'donor', label: 'I am a donor' },
-          { key: 'hospital', label: 'I am a hospital' },
-        ].map((option) => (
-          <button
-            key={option.key}
-            type="button"
-            onClick={() => setRole(option.key)}
-            className={`rounded-lg px-4 py-2.5 text-sm font-semibold transition ${
-              role === option.key
-                ? 'bg-primary text-white shadow-sm'
-                : 'text-heading hover:bg-blush'
-            }`}
-            aria-pressed={role === option.key}
-          >
-            {option.label}
-          </button>
-        ))}
-      </div>
-
-      <div className="card p-6">
-        {error && (
-          <Alert tone="error" className="mb-4">
-            {error}
-          </Alert>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-          {role === 'donor' ? (
-            <div className="grid gap-4 sm:grid-cols-2">
-              <TextField
-                id="name"
-                label="Full name"
-                required
-                value={form.name}
-                onChange={update('name')}
-                placeholder="Aarav Sharma"
-              />
-              <SelectField
-                id="bloodGroup"
-                label="Blood group"
-                required
-                value={form.bloodGroup}
-                onChange={update('bloodGroup')}
+      <div className="card overflow-hidden">
+        {/* Role toggle */}
+        <div className="border-b border-black/5 p-3">
+          <div className="grid grid-cols-2 gap-1 rounded-lg bg-blush/70 p-1" role="group" aria-label="Account type">
+            {[
+              { key: 'donor', label: 'I am a donor' },
+              { key: 'hospital', label: 'I am a hospital' },
+            ].map((option) => (
+              <button
+                key={option.key}
+                type="button"
+                onClick={() => setRole(option.key)}
+                className={`rounded-md px-4 py-2.5 text-sm font-semibold transition ${
+                  role === option.key
+                    ? 'bg-primary text-white shadow-sm'
+                    : 'text-heading hover:bg-white/70'
+                }`}
+                aria-pressed={role === option.key}
               >
-                {BLOOD_GROUPS.map((group) => (
-                  <option key={group} value={group}>
-                    {group}
-                  </option>
-                ))}
-              </SelectField>
-            </div>
-          ) : (
-            <>
-              <TextField
-                id="hospitalName"
-                label="Hospital name"
-                required
-                value={form.hospitalName}
-                onChange={update('hospitalName')}
-                placeholder="Sunrise Multispeciality Hospital"
-              />
-              <div className="grid gap-4 sm:grid-cols-2">
-                <TextField
-                  id="registrationNumber"
-                  label="Registration number"
-                  value={form.registrationNumber}
-                  onChange={update('registrationNumber')}
-                  placeholder="KA-HOSP-0000"
-                />
-                <TextField
-                  id="contactPerson"
-                  label="Contact person"
-                  value={form.contactPerson}
-                  onChange={update('contactPerson')}
-                  placeholder="Dr. Priya Menon"
-                />
-              </div>
-              <TextField
-                id="address"
-                label="Hospital address"
-                value={form.address}
-                onChange={update('address')}
-                placeholder="12 MG Road, Bengaluru"
-              />
-            </>
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="p-6">
+          {error && (
+            <Alert tone="error" className="mb-4">
+              {error}
+            </Alert>
           )}
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <TextField
-              id="email"
-              type="email"
-              label="Email address"
-              required
-              autoComplete="email"
-              value={form.email}
-              onChange={update('email')}
-              placeholder="you@example.com"
-            />
-            <PhoneField
-              id="phone"
-              label="Phone number"
-              required
-              value={form.phone}
-              onChange={handlePhoneChange}
-              onBlur={handlePhoneBlur}
-              error={phoneError}
-              hint="Enter 10-digit mobile number"
-              placeholder="98765 43210"
-            />
-          </div>
+          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+            {role === 'donor' ? (
+              <div className="grid gap-4 sm:grid-cols-2">
+                <TextField
+                  id="name"
+                  label="Full name"
+                  required
+                  variant="embedded"
+                  value={form.name}
+                  onChange={update('name')}
+                  placeholder="Aarav Sharma"
+                />
+                <SelectField
+                  id="bloodGroup"
+                  label="Blood group"
+                  required
+                  variant="embedded"
+                  value={form.bloodGroup}
+                  onChange={update('bloodGroup')}
+                >
+                  {BLOOD_GROUPS.map((group) => (
+                    <option key={group} value={group}>
+                      {group}
+                    </option>
+                  ))}
+                </SelectField>
+              </div>
+            ) : (
+              <>
+                <TextField
+                  id="hospitalName"
+                  label="Hospital name"
+                  required
+                  variant="embedded"
+                  value={form.hospitalName}
+                  onChange={update('hospitalName')}
+                  placeholder="Sunrise Multispeciality Hospital"
+                />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <TextField
+                    id="registrationNumber"
+                    label="Registration number"
+                    variant="embedded"
+                    value={form.registrationNumber}
+                    onChange={update('registrationNumber')}
+                    placeholder="KA-HOSP-0000"
+                  />
+                  <TextField
+                    id="contactPerson"
+                    label="Contact person"
+                    variant="embedded"
+                    value={form.contactPerson}
+                    onChange={update('contactPerson')}
+                    placeholder="Dr. Priya Menon"
+                  />
+                </div>
+                <TextField
+                  id="address"
+                  label="Hospital address"
+                  variant="embedded"
+                  value={form.address}
+                  onChange={update('address')}
+                  placeholder="12 MG Road, Bengaluru"
+                />
+              </>
+            )}
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <TextField
-              id="password"
-              type="password"
-              label="Password"
-              required
-              autoComplete="new-password"
-              hint="At least 6 characters."
-              value={form.password}
-              onChange={update('password')}
-            />
-            <TextField
-              id="confirm"
-              type="password"
-              label="Confirm password"
-              required
-              autoComplete="new-password"
-              value={form.confirm}
-              onChange={update('confirm')}
-            />
-          </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <TextField
+                id="email"
+                type="email"
+                label="Email address"
+                required
+                variant="embedded"
+                autoComplete="email"
+                value={form.email}
+                onChange={update('email')}
+                placeholder="you@example.com"
+              />
+              <PhoneField
+                id="phone"
+                label="Phone number"
+                required
+                variant="embedded"
+                value={form.phone}
+                onChange={handlePhoneChange}
+                onBlur={handlePhoneBlur}
+                error={phoneError}
+                hint="Enter 10-digit mobile number"
+                placeholder="98765 43210"
+              />
+            </div>
 
-          {/* Location */}
-          <fieldset className="rounded-xl border border-black/5 bg-blush/60 p-4">
-            <legend className="px-1 text-sm font-semibold text-heading">Location</legend>
-            <div className="mt-2 space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <TextField
+                id="password"
+                type="password"
+                label="Password"
+                required
+                variant="embedded"
+                autoComplete="new-password"
+                hint="At least 6 characters."
+                value={form.password}
+                onChange={update('password')}
+              />
+              <TextField
+                id="confirm"
+                type="password"
+                label="Confirm password"
+                required
+                variant="embedded"
+                autoComplete="new-password"
+                value={form.confirm}
+                onChange={update('confirm')}
+              />
+            </div>
+
+            {/* Location */}
+            <div className="space-y-4 border-t border-black/5 pt-5">
+              <div>
+                <h3 className="text-sm font-semibold text-heading">Location</h3>
+                <p className="mt-0.5 text-xs text-gray-400">
+                  Coordinates power the radius-based donor search. Defaults to Bengaluru if unchanged.
+                </p>
+              </div>
               <TextField
                 id="city"
                 label={role === 'donor' ? 'Area / city' : 'City'}
+                variant="embedded"
                 value={form.city}
                 onChange={update('city')}
                 placeholder="Koramangala, Bengaluru"
@@ -320,6 +321,7 @@ export default function Register() {
                   type="number"
                   step="0.00001"
                   label="Latitude"
+                  variant="embedded"
                   value={form.latitude}
                   onChange={update('latitude')}
                 />
@@ -328,6 +330,7 @@ export default function Register() {
                   type="number"
                   step="0.00001"
                   label="Longitude"
+                  variant="embedded"
                   value={form.longitude}
                   onChange={update('longitude')}
                 />
@@ -335,37 +338,34 @@ export default function Register() {
               <button type="button" onClick={useMyLocation} className="btn-outline">
                 📍 Use my current location
               </button>
-              <p className="text-xs text-gray-400">
-                Coordinates power the radius-based donor search. Defaults to Bengaluru if unchanged.
-              </p>
             </div>
-          </fieldset>
 
-          {role === 'donor' && (
-            <label className="flex items-center gap-3 rounded-xl border border-black/5 bg-blush/60 p-4">
-              <input
-                type="checkbox"
-                checked={form.available}
-                onChange={update('available')}
-                className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-              />
-              <span className="text-sm text-ink">
-                I am currently available to donate blood.
-              </span>
-            </label>
-          )}
+            {role === 'donor' && (
+              <label className="flex items-center gap-3 border-t border-black/5 pt-5">
+                <input
+                  type="checkbox"
+                  checked={form.available}
+                  onChange={update('available')}
+                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                />
+                <span className="text-sm text-ink">
+                  I am currently available to donate blood.
+                </span>
+              </label>
+            )}
 
-          <button type="submit" className="btn-primary w-full" disabled={busy}>
-            {busy ? 'Creating account…' : 'Create account'}
-          </button>
-        </form>
+            <button type="submit" className="btn-primary w-full" disabled={busy}>
+              {busy ? 'Creating account…' : 'Create account'}
+            </button>
+          </form>
 
-        <p className="mt-5 text-center text-sm text-gray-500">
-          Already have an account?{' '}
-          <Link to="/login" className="link">
-            Log in
-          </Link>
-        </p>
+          <p className="mt-5 text-center text-sm text-gray-500">
+            Already have an account?{' '}
+            <Link to="/login" className="link">
+              Log in
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   )

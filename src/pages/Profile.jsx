@@ -25,18 +25,10 @@ export default function Profile() {
     setForm((f) => ({ ...f, [key]: value }))
   }
 
-  const handlePhoneChange = (event, digits) => {
-    const formattedVal = event.target.value
-    setForm((f) => ({ ...f, phone: formattedVal }))
-
-    if (phoneError) {
-      if (digits.length === 10) {
-        const check = validateIndianPhoneNumber(formattedVal)
-        if (check.isValid) setPhoneError('')
-      } else if (digits.length === 0) {
-        setPhoneError('')
-      }
-    }
+  const handlePhoneChange = (event) => {
+    setForm((f) => ({ ...f, phone: event.target.value }))
+    // Clear stale feedback while typing; validate again on blur/submit.
+    if (phoneError) setPhoneError('')
   }
 
   const handlePhoneBlur = () => {

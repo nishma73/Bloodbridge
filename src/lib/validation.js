@@ -72,7 +72,7 @@ export function validateIndianPhoneNumber(phone) {
   if (digitsOnly.length < 10) {
     return {
       isValid: false,
-      error: `Phone number must be exactly 10 digits (currently ${digitsOnly.length}/10).`,
+      error: 'Phone number is incomplete. Please enter all 10 digits.',
       digits: digitsOnly,
       formatted: `+91 ${digitsOnly}`,
     }

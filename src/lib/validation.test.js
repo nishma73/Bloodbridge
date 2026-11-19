@@ -17,8 +17,8 @@ test('Phone Validation - Rejects phone with alphabets or symbols', () => {
 test('Phone Validation - Rejects phone with fewer than 10 digits', () => {
   const res = validateIndianPhoneNumber('987654');
   assert.equal(res.isValid, false);
-  assert.match(res.error, /must be exactly 10 digits/i);
-  assert.match(res.error, /6\/10/);
+  assert.match(res.error, /incomplete/i);
+  assert.match(res.error, /all 10 digits/i);
 });
 
 test('Phone Validation - Rejects phone with more than 10 digits', () => {

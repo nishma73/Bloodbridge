@@ -29,16 +29,22 @@
     @apply w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-ink placeholder-gray-400 transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20;
   }
 
+  /* Soft, inset-looking field used inside larger forms (registration) so the
+     inputs feel like part of the form surface instead of floating white cards. */
+  .input-embedded {
+    @apply w-full rounded-lg border border-rose-100 bg-blush/60 px-3.5 py-2.5 text-ink placeholder-gray-400 shadow-none transition focus:border-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20;
+  }
+
   .label {
     @apply mb-1 block text-sm font-medium text-heading;
   }
 
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition duration-200 hover:-translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0;
   }
 
   .btn-primary {
-    @apply btn bg-primary text-white shadow-sm hover:bg-primary-dark active:scale-[.99];
+    @apply btn bg-primary text-white shadow-sm hover:bg-primary-dark hover:shadow-md active:scale-[.99];
   }
 
   .btn-outline {
@@ -71,5 +77,59 @@
 
   .muted {
     @apply text-sm text-gray-500;
+  }
+}
+
+/* Subtle entrance, reveal and hover motion --------------------------------- */
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.card {
+  animation: card-in 0.45s ease-out backwards;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgba(76, 5, 25, 0.13);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: none;
+}
+
+#how-it-works {
+  scroll-margin-top: 4.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .card,
+  .reveal {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .card-hover:hover {
+    transform: none;
   }
 }

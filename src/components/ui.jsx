@@ -1,4 +1,5 @@
 // Small reusable UI primitives shared across pages.
+import Reveal from './Reveal'
 
 export function Spinner({ className = '' }) {
   return (
@@ -21,13 +22,13 @@ export function PageLoader({ label = 'Loading…' }) {
 
 export function PageHeader({ title, subtitle, actions }) {
   return (
-    <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <Reveal className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <h1 className="text-2xl font-bold sm:text-3xl">{title}</h1>
         {subtitle && <p className="mt-1 text-sm text-gray-500">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
-    </div>
+    </Reveal>
   )
 }
 
@@ -39,11 +40,11 @@ export function Stat({ label, value, hint, tone = 'default' }) {
     muted: 'text-gray-500',
   }
   return (
-    <div className="card p-4">
+    <Reveal className="card card-hover p-4">
       <p className="text-xs font-medium uppercase tracking-wide text-gray-500">{label}</p>
       <p className={`mt-1 text-2xl font-bold ${tones[tone] || tones.default}`}>{value}</p>
       {hint && <p className="mt-0.5 text-xs text-gray-400">{hint}</p>}
-    </div>
+    </Reveal>
   )
 }
 
@@ -80,10 +81,15 @@ export function Field({ label, htmlFor, hint, error, required, children }) {
   )
 }
 
-export function TextField({ label, hint, error, required, id, ...props }) {
+export function TextField({ label, hint, error, required, id, variant = 'default', ...props }) {
+  const base = variant === 'embedded' ? 'input-embedded' : 'input'
+  const invalid =
+    variant === 'embedded'
+      ? 'border-rose-300 bg-rose-50 focus:border-rose-500 focus:bg-white focus:ring-rose-200'
+      : 'border-rose-400 focus:border-rose-500 focus:ring-rose-200'
   return (
     <Field label={label} htmlFor={id} hint={hint} error={error} required={required}>
-      <input id={id} className={`input ${error ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-200' : ''}`} {...props} />
+      <input id={id} className={`${base} ${error ? invalid : ''}`} {...props} />
     </Field>
   )
 }
@@ -97,10 +103,12 @@ export function PhoneField({
   error,
   hint,
   required,
+  variant = 'default',
   placeholder = '98765 43210',
   disabled = false,
   ...props
 }) {
+  const embedded = variant === 'embedded'
   // Extract strictly up to 10 digits
   const extractDigits = (val) => {
     if (!val) return ''
@@ -184,15 +192,19 @@ export function PhoneField({
   return (
     <Field label={label} htmlFor={id} hint={hint} error={error} required={required}>
       <div
-        className={`relative flex w-full items-center rounded-lg border bg-white transition ${
+        className={`relative flex w-full items-center rounded-lg border transition ${
           error
-            ? 'border-rose-400 ring-2 ring-rose-200'
-            : 'border-gray-300 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20'
-        } ${disabled ? 'bg-gray-100 opacity-60 cursor-not-allowed' : ''}`}
+            ? 'border-rose-400 bg-rose-50 ring-2 ring-rose-200 focus-within:bg-white'
+            : embedded
+              ? 'border-rose-100 bg-blush/60 focus-within:border-primary focus-within:bg-white focus-within:ring-2 focus-within:ring-primary/20'
+              : 'border-gray-300 bg-white focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20'
+        } ${disabled ? 'cursor-not-allowed bg-gray-100 opacity-60' : ''}`}
       >
         {/* Country Code Prefix (+91) - Non-removable & Non-editable */}
         <span
-          className="flex select-none items-center gap-1.5 border-r border-gray-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-gray-700 rounded-l-lg shrink-0"
+          className={`flex select-none items-center gap-1.5 border-r px-3 py-2.5 text-sm font-semibold text-gray-700 shrink-0 ${
+            embedded ? 'border-rose-100 bg-transparent' : 'rounded-l-lg border-gray-200 bg-slate-50'
+          }`}
           title="Country code: India (+91)"
         >
           <span className="text-base leading-none" aria-hidden="true">🇮🇳</span>
@@ -213,44 +225,46 @@ export function PhoneField({
           onBlur={onBlur}
           disabled={disabled}
           placeholder={placeholder}
-          className="w-full rounded-r-lg border-0 bg-transparent px-3 py-2 text-sm text-ink placeholder:text-gray-400 focus:outline-none focus:ring-0"
+          className="w-full rounded-r-lg border-0 bg-transparent px-3.5 py-2.5 text-sm text-ink placeholder:text-gray-400 focus:outline-none focus:ring-0"
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : undefined}
           {...props}
         />
-
-        {/* Digit count badge when typing */}
-        {rawDigits.length > 0 && rawDigits.length < 10 && (
-          <span className="mr-2.5 shrink-0 rounded bg-amber-50 px-1.5 py-0.5 text-[11px] font-medium text-amber-700">
-            {rawDigits.length}/10
-          </span>
-        )}
-        {rawDigits.length === 10 && (
-          <span className="mr-2.5 shrink-0 text-emerald-600" title="10 digits entered">
-            <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
-              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-            </svg>
-          </span>
-        )}
       </div>
     </Field>
   )
 }
 
-export function SelectField({ label, hint, error, required, id, children, ...props }) {
+export function SelectField({ label, hint, error, required, id, variant = 'default', children, ...props }) {
   return (
     <Field label={label} htmlFor={id} hint={hint} error={error} required={required}>
-      <select id={id} className="input" {...props}>
+      <select
+        id={id}
+        className={`${variant === 'embedded' ? 'input-embedded' : 'input'} ${
+          error
+            ? 'border-rose-300 bg-rose-50 focus:border-rose-500 focus:bg-white focus:ring-rose-200'
+            : ''
+        }`}
+        {...props}
+      >
         {children}
       </select>
     </Field>
   )
 }
 
-export function TextAreaField({ label, hint, error, required, id, ...props }) {
+export function TextAreaField({ label, hint, error, required, id, variant = 'default', ...props }) {
   return (
     <Field label={label} htmlFor={id} hint={hint} error={error} required={required}>
-      <textarea id={id} className="input min-h-[90px] resize-y" {...props} />
+      <textarea
+        id={id}
+        className={`${variant === 'embedded' ? 'input-embedded' : 'input'} min-h-[90px] resize-y ${
+          error
+            ? 'border-rose-300 bg-rose-50 focus:border-rose-500 focus:bg-white focus:ring-rose-200'
+            : ''
+        }`}
+        {...props}
+      />
     </Field>
   )
 }
