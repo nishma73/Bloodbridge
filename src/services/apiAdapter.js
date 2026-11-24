@@ -11,7 +11,9 @@ const authListeners = new Set();
 
 function getToken() {
   try {
-    return localStorage.getItem(TOKEN_KEY) || null;
+    const val = localStorage.getItem(TOKEN_KEY);
+    if (!val || val === 'null' || val === 'undefined') return null;
+    return val;
   } catch {
     return null;
   }
@@ -104,7 +106,7 @@ async function request(endpoint, options = {}) {
       `Request failed with HTTP status ${res.status}`;
 
     // If unauthorized or expired token, clear local state
-    if (res.status === 401 && getToken()) {
+    if (res.status === 401) {
       setToken(null);
       setStoredUser(null);
       notifyAuthListeners(null);
@@ -164,7 +166,10 @@ export const apiAdapter = {
 
     async getCurrentUser() {
       const token = getToken();
-      if (!token) return null;
+      if (!token) {
+        setStoredUser(null);
+        return null;
+      }
 
       try {
         const res = await request('/auth/me');
@@ -181,24 +186,31 @@ export const apiAdapter = {
 
     onAuthChange(cb) {
       authListeners.add(cb);
-      // Immediately invoke with stored user to prevent jarring blank states
+
+      const token = getToken();
+      if (!token) {
+        // No token present: ensure user state is cleared and treat visitor as logged out
+        setStoredUser(null);
+        cb(null);
+        return () => authListeners.delete(cb);
+      }
+
+      // Token exists: invoke with cached user immediately to avoid layout flicker
       const stored = getStoredUser();
       cb(stored);
 
-      // Verify token in background if stored
-      if (getToken()) {
-        request('/auth/me')
-          .then((res) => {
-            const user = res.user || res;
-            setStoredUser(user);
-            cb(user);
-          })
-          .catch(() => {
-            setToken(null);
-            setStoredUser(null);
-            cb(null);
-          });
-      }
+      // Verify token in background against the server
+      request('/auth/me')
+        .then((res) => {
+          const user = res.user || res;
+          setStoredUser(user);
+          cb(user);
+        })
+        .catch(() => {
+          setToken(null);
+          setStoredUser(null);
+          cb(null);
+        });
 
       return () => authListeners.delete(cb);
     },
